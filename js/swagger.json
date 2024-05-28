@@ -1,0 +1,897 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "description": "<h2>documentation de l'api</h2>",
+    "version": "1.0.0",
+    "title": "API Rabbit butcher"
+  },
+  "server": [
+    {
+      "url": "https//demo.server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authenticate",
+      "descritpion": "L'ensemble des éléments permettant d'accéder et quitter l'application"
+    },
+    {
+      "name": "Today",
+      "description": "L'ensemble des informations les commandes du jour et les actions possible sur une commande"
+    },
+    {
+      "name": "Orders",
+      "description": "L'ensemble des informations les commandes et les actions possible sur une commande"
+    },
+    {
+      "name": "FollowUp",
+      "description": "L'ensemble des informations les demandes des clients"
+    },
+    {
+      "name": "History",
+      "description": "Historique des commandes passées"
+    },
+    {
+      "name": "Customers",
+      "description": "L'ensemble des informations concernant les clients"
+    },
+    {
+      "name": "Emails",
+      "description": "L'ensemble des actions possibles par le client et par le biais des différents mails"
+    },
+    {
+      "name": "Users",
+      "description": "La liste des demandes pour accéder à l'application"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": ["Authenticate"],
+        "summary": "User register",
+        "description": "Register a user and return a user if successful",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "maurizio.milione@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "Password123"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful register",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "example": "you.moudni@gmail.com"
+                        },
+                        "compagnyName": {
+                          "type": "string",
+                          "example": "Fratteli Marmi"
+                        },
+                        "siretNumber": {
+                          "type": "string",
+                          "example": "01020304050607"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-05-28T13:20:12.432+00:00"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-05-28T13:20:12.432+00:00"
+                        },
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "cannot register user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },  
+    "/activate": {
+      "post": {
+        "tags": ["Authenticate"],
+        "summary": "Activate user account",
+        "description": "Activate a user account with the provided token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "you.moudni@gmail.com"
+                  },
+                  "token": {
+                    "type": "string",
+                    "example": "2eb4a47bb3f9f4b81fe5f1a8afacf6ad18d4f67f"
+                  }
+                },
+                "required": ["email", "token"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User activated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User activated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid activation token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid activation token"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["Authenticate"],
+        "summary": "User login",
+        "description": "Authenticate a user and return a token if successful",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "you.moudni@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "azerty123"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "bearer"
+                        },
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        },
+                        "token": {
+                          "type": "string",
+                          "example": "oat_MQ.LWJlekF1QzZnVFpPNTYtYldZbW1kZDJSMnRxTEY3RnlhOWF0NlFoZDMwNzMwNzY1ODk"
+                        },
+                        "abilities": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "example": ["*"]
+                        },
+                        "lastUsedAt": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": null
+                        },
+                        "expiresAt": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": null
+                        }
+                      }
+                    },
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "you.moudni@gmail.com"
+                    },
+                    "compagnyName": {
+                      "type": "string",
+                      "example": "Fratteli Marmi"
+                    },
+                    "siretNumber": {
+                      "type": "string",
+                      "example": "01020304050607"
+                    },
+                    "isActivated": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2024-05-28T15:53:09.000+00:00"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2024-05-28T13:53:09.000+00:00"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Cannot login user"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/forgot-password": {
+      "post": {
+        "tags": ["Authenticate"],
+        "summary": "Forgot password",
+        "description": "Send a password reset email to the user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "you.moudni@gmail.com"
+                  }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password reset email sent"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to send password reset email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Cannot send password reset email"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },    
+    "/reset-password": {
+      "post": {
+        "tags": ["Authenticate"],
+        "summary": "Request password reset",
+        "description": "Initiate the password reset process by sending an email to the user with a reset link",
+        "requestBody" : {
+            "required" : true,
+            "content" : {
+                "application/json" : {
+                    "schema" : {
+                        "type" : "object",
+                        "properties" : {
+                            "email" : {
+                                "type" : "string",
+                                "format" : "email"
+                            }
+                        },
+                        "required" : ["email"]
+                    }
+                }
+            }
+        },
+        "responses" : {
+            "200" : {
+                "description" : "Password reset request sent successfully",
+                "content" : {
+                    "application/json" : {
+                        "schema" : {
+                            "type" : "object",
+                            "properties" : {
+                                "message" : {
+                                    "type" : "string",
+                                    "example" : "Password reset request sent successfully, please check your email"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "404": {
+                "description": "User not found",
+                "content": {
+                    "application/json": {
+                        "schema" : {
+                            "type" : "object",
+                            "properties" : {
+                                "message" : {
+                                    "type" : "string",
+                                    "example" : "User with provided email not found"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+          }
+      }
+    },
+    "/reset-password/{token}": {
+      "post": {
+        "tags": ["Authenticate"],
+        "summary": "Reset password",
+        "description": "Reset the user's password using the provided token",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "6216ef325e5e422fc8f53e8fd59f9b82ee3bf6c9"
+            },
+            "description": "The password reset token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newPassword": {
+                    "type": "string",
+                    "example": "NewSecurePassword123"
+                  }
+                },
+                "required": ["newPassword"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password reset successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or expired token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired token"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": ["Authenticate"],
+        "summary": "User logout",
+        "description": "Logout the authenticated user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "oat_MQ.bXpVWVpWNDAzSm1paGFOTWxlWi1Ca1hseTZTbFUwU2hkVGVuMVlkTDUyMDkyMDUyMw"
+            },
+            "description": "Bearer token for authentication"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Log out successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                            "example": "Unauthorized access"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },    
+    "/today": {
+      "get": {
+        "tags": ["Today"]
+      }
+    },
+    "/today/validation": {
+      "get": {
+        "tags": ["Today"]
+      }
+    },
+    "/today/cancel": {
+      "delete": {
+        "tags": ["Today"]
+      }
+    },
+    "/today/filter": {
+      "get": {
+        "tags": ["Today"]
+      }
+    },
+    "/orders": {
+      "get": {
+        "tags": ["Orders"]
+      }
+    },
+    "/order/add": {
+      "post": {
+        "tags": ["Orders"]
+      }
+    },
+    "/order/dateEdit": {
+      "post": {
+        "tags": ["Orders"]
+      }
+    },
+    "/order/validation": {
+      "get": {
+        "tags": ["Orders"]
+      }
+    },
+    "/order/delete": {
+      "delete": {
+        "tags": ["Orders"]
+      }
+    },
+    "/orders/filter": {
+      "get": {
+        "tags": ["Orders"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "description": "La date indiquée dans le filtre"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "description": "Le statut indiqué dans le filtre"
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "description": "Le nom indiqué dans le filtre"
+          },
+          {
+            "in": "query",
+            "name": "surname",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "description": "Le prénom indiqué dans le filtre"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des commandes filtrées",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArrayOfOrders"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "erreur dans la recherche par filtre"
+          }
+        }
+      }
+    },
+    "/followUp": {
+      "get": {
+        "tags": ["FollowUp"]
+      }
+    },
+    "/followUp/editDateResponse": {
+      "get": {
+        "tags": ["FollowUp"]
+      }
+    },
+    "/followUp/delete": {
+      "delete": {
+        "tags": ["FollowUp"]
+      }
+    },
+    "/followUp/filter": {
+      "get": {
+        "tags": ["FollowUp"]
+      }
+    },
+    "/history": {
+      "get": {
+        "tags": ["History"]
+      }
+    },
+    "/history/delete": {
+      "delete": {
+        "tags": ["History"]
+      }
+    },
+    "/history/filter": {
+      "get": {
+        "tags": ["History"]
+      }
+    },
+    "/customers": {
+      "get": {
+        "tags": ["Customers"]
+      }
+    },
+    "/customers/delete": {
+      "delete": {
+        "tags": ["Customers"]
+      }
+    },
+    "/customers/filter": {
+      "get": {
+        "tags": ["Customers"]
+      }
+    },
+    "/customers/dateEdit": {
+      "post": {
+        "tags": ["Emails"]
+      }
+    },
+    "/customers/cancel": {
+      "delete": {
+        "tags": ["Emails"]
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Obtenir la liste des commerçants ayant fait une demande de création de compte",
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "renvoie une collection de Users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArrayOfUsers"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "renvoie une erreur car la requête a échouée"
+          }
+        }
+      }
+    },
+    "/users/delete": {
+      "delete": {
+        "tags": ["Users"]
+      }
+    },
+    "/users/response": {
+      "get": {
+        "tags": ["Users"]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Users": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "denomination_social": {
+            "type": "string"
+          },
+          "siret": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "ArrayOfUsers": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Users"
+        },
+        "example": [
+          {
+            "id": 1,
+            "name": "milione",
+            "surname": "maurizio",
+            "email": "maurizio.milione@gmail.com",
+            "denomination_social": "fratelli marmi",
+            "siret": "172692825272829",
+            "status": "pending"
+          },
+          {
+            "id": 1,
+            "name": "youssef",
+            "surname": "moudni",
+            "email": "youssef.moudni@gmail.com",
+            "denomination_social": "rabbit butcher",
+            "siret": "628937258298273",
+            "status": "accept"
+          }
+        ]
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "recoveryDate": {
+            "type": "date"
+          },
+          "status": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          }
+        }
+      },
+      "ArrayOfOrders": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Order"
+        },
+        "example": [
+          {
+            "id": 1,
+            "recoveryDate": "20/04/2024",
+            "status": "confirmed",
+            "price": "20",
+            "name": "milione",
+            "surname": "maurizio"
+          },
+          {
+            "id": 1,
+            "recoveryDate": "16/07/2024",
+            "status": "pending",
+            "price": "30",
+            "name": "moudni",
+            "surname": "youssef"
+          }
+        ]
+      }
+    }
+  }
+}
